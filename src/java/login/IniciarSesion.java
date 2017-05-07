@@ -34,22 +34,42 @@ public class IniciarSesion extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/xml;charset=UTF-8");
+        response.setContentType("text/json;charset=UTF-8");
         PrintWriter pw = response.getWriter();
+        String usuario = request.getParameter("usuario");
+        String pass = request.getParameter("pass");
         try{
-            Element login = new Element("login");
-            Element alerta = new Element("alerta")
-                .setAttribute("tipo", "error")
-                .addContent("mensaje");
-            Element redirect = new Element("redirect")
-                .addContent("index.html");
+            System.out.println(usuario);
+            System.out.println(pass);
             
-            login   .addContent(alerta)
-                    .addContent(redirect);
-            
-            Document newdoc = new Document(login);
-            XMLOutputter fmt = new XMLOutputter(Format.getPrettyFormat());
-            fmt.output(newdoc, pw);
+            JSONObject json = new JSONObject();
+            JSONObject accion = new JSONObject();
+            if(usuario.equals("alex") && pass.equals("123")){
+                accion.put("tipo", "alumno");
+                accion.put("sesion", "Aun no se como hacerle");
+                
+                json.put("success", true);
+                json.put("accion", accion);
+            }else if(usuario.equals("fer") && pass.equals("123")){
+                accion.put("tipo", "profesor");
+                accion.put("sesion", "Aun no se como hacerle");
+                
+                json.put("success", true);
+                json.put("accion", accion);
+            }else if(usuario.equals("ulises") && pass.equals("123")){
+                accion.put("tipo", "administrador");
+                accion.put("sesion", "Aun no se como hacerle");
+                
+                json.put("success", true);
+                json.put("accion", accion);
+            }else{
+                accion.put("tipo", "error");
+                accion.put("mensaje", "Usuario incorrecto");
+
+                json.put("success", false);
+                json.put("accion", accion);
+            }
+            pw.write(json.toJSONString());
             pw.flush();
             pw.close();
             
@@ -67,11 +87,11 @@ public class IniciarSesion extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+    /*@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-    }
+    }*/
 
     /**
      * Handles the HTTP <code>POST</code> method.

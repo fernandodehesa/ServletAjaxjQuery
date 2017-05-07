@@ -5,32 +5,26 @@
  */
 
 $(document).ready(function() {
-    $("#form-login input[type='button']").click(function(){
-        console.log( $("#form-login") );
-    });
-    $("#form-login").submit(function(){
-        var url = $(this).attr("action");
-        console.log(this);
-        var data = $(this).serialize();
-        $.get(url,data,function(xml){
-            var xmlDoc = $.parseXML( xml );
-            //window.location.href = "index.html";
-            console.log(xml);
+    $("#form-login").submit(function(event){
+        event.preventDefault();
+        var form = $(this);
+        $.ajax({
+            method: form.attr("method"),
+            url: form.attr("action"),
+            dataType: 'json',
+            data: {
+                usuario: form.children("input[name='usuario']").val(),
+                pass: form.children("input[name='pass']").val()
+            },
+            success: function (data) {
+                console.log(data);
+                if(data.success == false){
+                    console.log(data.accion.mensaje);
+                }else{
+                    window.location.href = data.accion.tipo;
+                }
+            }
         });
-        
-        /*posting.done(function( data ) {
-            //console.log(data);
-            alert("GGGGGG");
-        });*/
-        /*$.post({
-           type: "post",
-           url: form.attr("action"),
-           data: $("#idForm").serialize(),
-           success: function(data){
-               alert(data); // show response from the php script.
-           }
-        });*/
-        
     });
 });
 
